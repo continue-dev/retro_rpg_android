@@ -3,6 +3,8 @@ package com.continue_jump.retrorpg001
 import android.graphics.*
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import android.widget.TextView
+import androidx.core.graphics.drawable.toDrawable
 
 class GameSurfaceView : SurfaceHolder.Callback, Runnable {
 
@@ -11,22 +13,51 @@ class GameSurfaceView : SurfaceHolder.Callback, Runnable {
 
     var _thread : Thread? = null
     var _isRunning : Boolean = true
+    var isSceneStart : Boolean = false
 
-    var element : MutableList<Element> = mutableListOf()
 
-    var _x : Float = 100.0f
-    var _y : Float = 100.0f
 
-    constructor(surface: SurfaceView, bitmap: Bitmap) {
-        for (x in 0..3) {
-            for (y in 0..3) {
-                element.add(Element(bitmap, 300.0f * x.toFloat(), 300.0f * y.toFloat()) )
-            }
-        }
+    var place : Place = Place()
+    var words : Words? = null
+    var textNumber : Int = 0
+
+    constructor(surface: SurfaceView) {
 
         _holder = surface.holder
         _holder.addCallback(this)
         _surface = surface
+    }
+
+    fun addBitmapRen(bitmap: Bitmap) {
+        place.ren = Element(bitmap, 1024.0f, 128.0f)
+        place.messageCharacter = bitmap
+    }
+    fun addBitmapSara(bitmap: Bitmap) {
+        place.sara = Element(bitmap, 512.0f, 128.0f)
+    }
+    fun addBitmapToushu(bitmap: Bitmap) {
+        place.toushu = Element(bitmap, 512.0f + 256.0f - 64.0f, 64.0f)
+    }
+    fun addBitmapScene001_butsuma(bitmap: Bitmap) {
+        place.place = Element(bitmap, 64.0f, 16.0f)
+        place.butsumaBitmap = bitmap
+    }
+    fun addBitmapScene001_byouin(bitmap: Bitmap) {
+        place.byouinBitmap = bitmap
+    }
+    fun addBitmapTextFrame(bitmap: Bitmap) {
+        place.textFrame = Element(bitmap, 512.0f - 64.0f, 512.0f + 128.0f)
+    }
+    fun addTextView(textView: TextView) {
+        words = Words(textView)
+
+    }
+
+    fun onTouch() {
+        textNumber += 1
+        words?.nextWords(textNumber)
+        place.nextPlace(textNumber)
+
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
@@ -43,42 +74,23 @@ class GameSurfaceView : SurfaceHolder.Callback, Runnable {
     }
 
     override fun run() {
-        var cnt = 0
-//        val runner = Runner()
 
         while (_isRunning) {
             val canvas = _holder.lockCanvas()
 
-//            val bitmap = runner.createBitmap()
-//            var x = - bitmap.width
-//            if (_surface.width < (x + cnt * 50 )) {
-//                cnt = 0
-//            } else {
-//                x += cnt * 50
-//            }
-
-            val paint = Paint()
-            canvas.drawColor(0, PorterDuff.Mode.CLEAR)
-            paint.setColor(Color.GREEN)
-            canvas.drawRect(0.0f,0.0f, _surface.width.toFloat(), _surface.height.toFloat(), paint)
-            for (el in element) {
-                el.x += 1.0f
-                el.y += 1.0f
-                canvas.drawBitmap(
-                        el.bitmap,
-                        Rect(0,0,512,512),
-                        Rect(el.x.toInt(),el.y.toInt(),el.x.toInt() + 256,el.y.toInt() + 256),
-                        paint
-                )
+            if (place.textFrame?.bitmap != null) {
+                isSceneStart = true
             }
-//            canvas.drawBitmap(bitmap, x.toFloat(), (_surface.height - bitmap.height).toFloat(), paint)
 
-            _x += 1.0f
-            _y += 1.0f
+            if (isSceneStart) {
+                val paint = Paint()
+                canvas.drawColor(0, PorterDuff.Mode.CLEAR)
+                paint.setColor(Color.GREEN)
+                canvas.drawRect(0.0f, 0.0f, _surface.width.toFloat(), _surface.height.toFloat(), paint)
+                place.draw(canvas, paint)
+            }
 
             _holder.unlockCanvasAndPost(canvas)
-//            Thread.sleep(150L)
-            cnt++
 
         }
     }

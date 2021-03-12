@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.SurfaceView
 import android.view.View
+import android.widget.TextView
+import android.view.MotionEvent
+import android.view.ViewGroup
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,10 +30,29 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        val text = TextView(this)
+        addContentView(text, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT) )
+        text.bringToFront()
 
         val surfaceView = findViewById<SurfaceView>(R.id.surfaceView)
-        var bmp1 = BitmapFactory.decodeResource(getResources(), R.drawable.heartp)
-        gameSurfaceView = GameSurfaceView(surfaceView, bmp1)
+        gameSurfaceView = GameSurfaceView(surfaceView)
+        gameSurfaceView?.addTextView( text )
 
+        gameSurfaceView?.addBitmapRen(BitmapFactory.decodeResource(getResources(), R.drawable.ren))
+        gameSurfaceView?.addBitmapSara(BitmapFactory.decodeResource(getResources(), R.drawable.sara))
+        gameSurfaceView?.addBitmapToushu(BitmapFactory.decodeResource(getResources(), R.drawable.toushu))
+        gameSurfaceView?.addBitmapScene001_butsuma(BitmapFactory.decodeResource(getResources(), R.drawable.scene001_butsuma))
+        gameSurfaceView?.addBitmapScene001_byouin(BitmapFactory.decodeResource(getResources(), R.drawable.scene001_byouin))
+        gameSurfaceView?.addBitmapTextFrame(BitmapFactory.decodeResource(getResources(), R.drawable.textframe))
+
+    }
+
+    override fun onTouchEvent(event: MotionEvent) :Boolean {
+        when(event.getAction()) {
+            MotionEvent.ACTION_UP -> {
+                gameSurfaceView?.onTouch()
+            }
+        }
+        return super.onTouchEvent(event)
     }
 }
