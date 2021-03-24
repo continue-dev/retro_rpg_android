@@ -75,6 +75,8 @@ class Words {
             text?.text = """
 少女「レン・・・」
 """.trimMargin()
+        } else if (textNumber == 12) {
+            text?.text = ""
         }
 
 

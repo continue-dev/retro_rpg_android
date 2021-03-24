@@ -4,17 +4,24 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
+import android.widget.Button
 
 class Place {
 
     var ren : Element? = null
     var sara : Element? = null
     var toushu : Element? = null
+
+    var police : Element? = null
+
     var place : Element? = null
     var messageCharacter : Bitmap? = null
     var byouinBitmap : Bitmap? = null
     var butsumaBitmap : Bitmap? = null
     var textFrame : Element? = null
+
+    var battleBitmap : Bitmap? = null
+
 
     constructor() {
 
@@ -47,6 +54,12 @@ class Place {
             sara?.y = 128.0f
         } else if (textNumber == 11) {
             messageCharacter = sara?.bitmap
+        } else if (textNumber == 12) {
+            messageCharacter = ren?.bitmap
+            place?.bitmap = battleBitmap!!
+            ren?.x = 1200.0f
+            sara?.x = 900.0f
+
         }
     }
 
@@ -54,7 +67,7 @@ class Place {
         canvas.drawBitmap(
                 place?.bitmap!!,
                 Rect(0, 0, 512 * 8, 512 * 4),
-                Rect(place?.x!!.toInt(), place?.y!!.toInt(), place?.x!!.toInt() + 256 * 24, place?.y!!.toInt() + 256 * 12),
+                Rect(place?.x!!.toInt(), place?.y!!.toInt(), place?.x!!.toInt() + 256 * 26, place?.y!!.toInt() + 256 * 13),
                 paint
         )
         canvas.drawBitmap(
@@ -83,6 +96,15 @@ class Place {
                 paint
         )
 
+        if (place?.bitmap == battleBitmap) {
+            canvas.drawBitmap(
+                    police?.bitmap!!,
+                    Rect(0, 0, 256, 256),
+                    Rect(police?.x!!.toInt(), police?.y!!.toInt(), police?.x!!.toInt() + 256 * 4, police?.y!!.toInt() + 256 * 4),
+                    paint
+            )
+
+        }
         if (place?.bitmap == byouinBitmap) {
             canvas.drawBitmap(
                     toushu?.bitmap!!,

@@ -4,7 +4,7 @@ import android.graphics.*
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.widget.TextView
-import androidx.core.graphics.drawable.toDrawable
+import android.widget.Button
 
 class GameSurfaceView : SurfaceHolder.Callback, Runnable {
 
@@ -16,10 +16,14 @@ class GameSurfaceView : SurfaceHolder.Callback, Runnable {
     var isSceneStart : Boolean = false
 
 
+    var title : Title = Title()
+    var opening : Opening = Opening()
+    var scenario : Scenario = Scenario()
+    var quest : Quest = Quest()
+    var battle : Battle = Battle()
 
-    var place : Place = Place()
-    var words : Words? = null
-    var textNumber : Int = 0
+    var sceneNumber : Int = 0
+
 
     constructor(surface: SurfaceView) {
 
@@ -28,35 +32,98 @@ class GameSurfaceView : SurfaceHolder.Callback, Runnable {
         _surface = surface
     }
 
+    fun addBitmapTitle(bitmap: Bitmap) {
+        title.bitmap = bitmap
+    }
+    fun addBitmapOpening(bitmap: Bitmap) {
+        opening.bitmap = bitmap
+    }
+    fun addBitmapQuest(bitmap: Bitmap) {
+        quest.bitmap = bitmap
+    }
+
     fun addBitmapRen(bitmap: Bitmap) {
-        place.ren = Element(bitmap, 1024.0f, 128.0f)
-        place.messageCharacter = bitmap
+        scenario.place.ren = Element(bitmap, 1024.0f, 128.0f)
+        scenario.place.messageCharacter = bitmap
+
+        battle.ren = Element(bitmap, 1024.0f, 128.0f)
+
     }
     fun addBitmapSara(bitmap: Bitmap) {
-        place.sara = Element(bitmap, 512.0f, 128.0f)
+        scenario.place.sara = Element(bitmap, 512.0f, 128.0f)
+        battle.sara = Element(bitmap, 512.0f, 128.0f)
+
     }
     fun addBitmapToushu(bitmap: Bitmap) {
-        place.toushu = Element(bitmap, 512.0f + 256.0f - 64.0f, 64.0f)
+        scenario.place.toushu = Element(bitmap, 512.0f + 256.0f - 64.0f, 64.0f)
     }
+
+    fun addBitmapPolice(bitmap: Bitmap) {
+        battle.police = Element(bitmap, 64.0f, 0.0f)
+    }
+
     fun addBitmapScene001_butsuma(bitmap: Bitmap) {
-        place.place = Element(bitmap, 64.0f, 16.0f)
-        place.butsumaBitmap = bitmap
+        scenario.place.place = Element(bitmap, 0.0f, 0.0f)
+        scenario.place.butsumaBitmap = bitmap
     }
     fun addBitmapScene001_byouin(bitmap: Bitmap) {
-        place.byouinBitmap = bitmap
+        scenario.place.byouinBitmap = bitmap
     }
+
+    fun addBitmapScene001_battle(bitmap: Bitmap) {
+        battle.bitmap = bitmap
+    }
+
+
     fun addBitmapTextFrame(bitmap: Bitmap) {
-        place.textFrame = Element(bitmap, 512.0f - 64.0f, 512.0f + 128.0f)
+        scenario.place.textFrame = Element(bitmap, 512.0f - 64.0f, 512.0f + 128.0f)
+        battle.textFrame = Element(bitmap, 512.0f - 64.0f, 512.0f + 128.0f)
     }
     fun addTextView(textView: TextView) {
-        words = Words(textView)
+        scenario.words = Words(textView)
+    }
 
+    fun addButton1(button: Button) {
+        opening.button1 = button
+        scenario.button1 = button
+        quest.button1 = button
+        battle.button1 = button
+    }
+    fun addButton2(button: Button) {
+        opening.button2 = button
+        scenario.button2 = button
+        quest.button2 = button
+        battle.button2 = button
+    }
+    fun addButton3(button: Button) {
+        opening.button3 = button
+        scenario.button3 = button
+        quest.button3 = button
+        battle.button3 = button
     }
 
     fun onTouch() {
-        textNumber += 1
-        words?.nextWords(textNumber)
-        place.nextPlace(textNumber)
+        sceneNumber += 1
+
+        if (sceneNumber == 1) {
+            opening.changeButton()
+        }
+        if (sceneNumber == 2) {
+            scenario.changeButton()
+        }
+        if (sceneNumber == 3) {
+            quest.changeButton()
+        }
+        if (sceneNumber == 4) {
+            battle.changeButton()
+        }
+
+        if (sceneNumber >= 5) {
+            sceneNumber = 1
+        }
+//        textNumber += 1
+//        words?.nextWords(textNumber)
+//        place.nextPlace(textNumber)
 
     }
 
@@ -78,16 +145,32 @@ class GameSurfaceView : SurfaceHolder.Callback, Runnable {
         while (_isRunning) {
             val canvas = _holder.lockCanvas()
 
-            if (place.textFrame?.bitmap != null) {
+            if (title.bitmap != null) {
                 isSceneStart = true
             }
 
             if (isSceneStart) {
                 val paint = Paint()
                 canvas.drawColor(0, PorterDuff.Mode.CLEAR)
-                paint.setColor(Color.GREEN)
-                canvas.drawRect(0.0f, 0.0f, _surface.width.toFloat(), _surface.height.toFloat(), paint)
-                place.draw(canvas, paint)
+//                paint.setColor(Color.GREEN)
+//                canvas.drawRect(0.0f, 0.0f, _surface.width.toFloat(), _surface.height.toFloat(), paint)
+
+                if (sceneNumber == 0) {
+                    title.draw(canvas, paint)
+                }
+                if (sceneNumber == 1) {
+                    opening.draw(canvas, paint)
+                }
+                if (sceneNumber == 2) {
+                    scenario.draw(canvas, paint)
+                }
+                if (sceneNumber == 3) {
+                    quest.draw(canvas, paint)
+                }
+                if (sceneNumber == 4) {
+                    battle.draw(canvas, paint)
+                }
+
             }
 
             _holder.unlockCanvasAndPost(canvas)
