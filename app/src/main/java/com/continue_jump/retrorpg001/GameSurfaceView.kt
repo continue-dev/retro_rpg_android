@@ -81,6 +81,8 @@ class GameSurfaceView : SurfaceHolder.Callback, Runnable {
     }
     fun addTextView(textView: TextView) {
         scenario.words = Words(textView)
+        quest.words = scenario.words
+        battle.words = scenario.words
     }
 
     fun addButton1(button: Button) {
@@ -102,7 +104,7 @@ class GameSurfaceView : SurfaceHolder.Callback, Runnable {
         battle.button3 = button
     }
 
-    fun onTouch() {
+    fun onTouch(): Int {
         sceneNumber += 1
 
         if (sceneNumber == 1) {
@@ -121,6 +123,8 @@ class GameSurfaceView : SurfaceHolder.Callback, Runnable {
         if (sceneNumber >= 5) {
             sceneNumber = 1
         }
+
+        return sceneNumber
 //        textNumber += 1
 //        words?.nextWords(textNumber)
 //        place.nextPlace(textNumber)

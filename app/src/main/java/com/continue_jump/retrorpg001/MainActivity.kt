@@ -1,6 +1,8 @@
 package com.continue_jump.retrorpg001
 
 import android.graphics.BitmapFactory
+import android.media.AudioManager
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.SurfaceView
@@ -10,6 +12,7 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import java.io.IOException
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,6 +31,7 @@ class MainActivity : AppCompatActivity() {
                         or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 )
         setContentView(R.layout.activity_main)
+
     }
 
     override fun onResume() {
@@ -94,12 +98,111 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    var beforeSceneNumber = 0
     override fun onTouchEvent(event: MotionEvent) :Boolean {
         when(event.getAction()) {
             MotionEvent.ACTION_UP -> {
-                gameSurfaceView?.onTouch()
+                val sceneNumber = gameSurfaceView?.onTouch()
+                if (sceneNumber == 4) {
+                    audioPlay()
+                } else if (beforeSceneNumber == 4 && sceneNumber == 1) {
+                    audioStop()
+                }
+                beforeSceneNumber = sceneNumber!!
             }
         }
         return super.onTouchEvent(event)
     }
+
+    private var mediaPlayer: MediaPlayer = MediaPlayer()
+
+    private fun audioSetup(): Boolean {
+        // インタンスを生成
+//        mediaPlayer = MediaPlayer()
+
+        //音楽ファイル名, あるいはパス
+        val filePath = "dead_or_live.mp3"
+        var fileCheck = false
+
+        // assetsから mp3 ファイルを読み込み
+        try {
+            assets.openFd(filePath).use { afdescripter ->
+                // MediaPlayerに読み込んだ音楽ファイルを指定
+                mediaPlayer.setDataSource(
+                    afdescripter.fileDescriptor,
+                    afdescripter.startOffset,
+                    afdescripter.length
+                )
+                // 音量調整を端末のボタンに任せる
+                volumeControlStream = AudioManager.STREAM_MUSIC
+                mediaPlayer.prepare()
+                fileCheck = true
+            }
+        } catch (e1: IOException) {
+            e1.printStackTrace()
+        }
+        return fileCheck
+    }
+
+    private fun audioPlay() {
+//        if (mediaPlayer == null) {
+        // audio ファイルを読出し
+        if (audioSetup()) {
+//                Toast.makeText(application, "Rread audio file", Toast.LENGTH_SHORT).show()
+        } else {
+//                Toast.makeText(application, "Error: read audio file", Toast.LENGTH_SHORT)
+//                    .show()
+            return
+        }
+//        } else {
+//            // 繰り返し再生する場合
+//            mediaPlayer!!.stop()
+//            mediaPlayer!!.reset()
+//            // リソースの解放
+//            mediaPlayer!!.release()
+//        }
+
+        // 再生する
+        mediaPlayer.isLooping = true
+        mediaPlayer!!.start()
+
+        // 終了を検知するリスナー
+//        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//            @Override
+//            public void onCompletion(MediaPlayer mp) {
+//                Log.d("debug","end of audio");
+//                audioStop();
+//            }
+//        });
+        // lambda
+        mediaPlayer!!.setOnCompletionListener { mp: MediaPlayer? ->
+//            Log.d("debug", "end of audio")
+            audioStop()
+        }
+    }
+
+    private fun audioStop() {
+        // 再生終了
+        mediaPlayer!!.stop()
+        // リセット
+        mediaPlayer!!.reset()
+        // リソースの解放
+        mediaPlayer!!.release()
+//        mediaPlayer = null
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        audioStop()
+        audioPlay()
+    }
+    override fun onPause() {
+        super.onPause()
+        audioStop()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        audioStop()
+    }
+
 }

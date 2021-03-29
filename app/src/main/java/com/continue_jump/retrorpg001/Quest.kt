@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import android.widget.Button
+import android.widget.TextView
 
 class Quest {
 
@@ -22,6 +23,8 @@ class Quest {
     }
 
     fun changeButton() {
+        words?.text?.visibility = TextView.INVISIBLE
+        words?.text?.text = ""
         button1?.visibility = Button.VISIBLE
         button2?.visibility = Button.VISIBLE
         button3?.visibility = Button.VISIBLE

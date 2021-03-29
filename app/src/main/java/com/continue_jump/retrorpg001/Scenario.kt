@@ -3,6 +3,7 @@ package com.continue_jump.retrorpg001
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.widget.Button
+import android.widget.TextView
 
 class Scenario {
 
@@ -19,6 +20,7 @@ class Scenario {
     }
 
     fun changeButton() {
+        words?.text?.visibility = TextView.VISIBLE
         button1?.visibility = Button.VISIBLE
         button2?.visibility = Button.VISIBLE
         button3?.visibility = Button.VISIBLE
@@ -26,6 +28,17 @@ class Scenario {
         button1?.text = "話す"
         button2?.text = "次へ"
         button3?.text = "戻る"
+
+        button1?.setOnClickListener {
+            textNumber += 1
+
+            words?.nextWords(textNumber)
+        }
+        button2?.setOnClickListener {
+            textNumber += 1
+
+            words?.nextWords(textNumber)
+        }
 
     }
 
