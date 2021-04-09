@@ -13,14 +13,14 @@ class Element {
     val DAMAGE_TIME : Int = 1
 
     var attackCount : Int = 0
-    var attackSpeed : Float = -8.0f
+    var attackSpeed : Float = -32.0f
     var attackTime : Int = 0
-    val ATTACK_TIME : Int = 10
+    val ATTACK_TIME : Int = 2
 
 
-    var idleSpeed : Float = 4.0f
+    var idleSpeed : Float = 16.0f
     var idleTime : Int = 0
-    val IDLE_TIME : Int = 10
+    val IDLE_TIME : Int = 2
 
     constructor(_bitmap: Bitmap, _x: Float, _y: Float) {
         bitmap = _bitmap

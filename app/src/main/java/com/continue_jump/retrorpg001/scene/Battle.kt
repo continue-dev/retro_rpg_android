@@ -1,10 +1,12 @@
-package com.continue_jump.retrorpg001
+package com.continue_jump.retrorpg001.scene
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import android.widget.Button
+import com.continue_jump.retrorpg001.Element
+import com.continue_jump.retrorpg001.Words
 
 class Battle {
 

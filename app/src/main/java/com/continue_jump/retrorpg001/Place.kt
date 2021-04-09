@@ -20,6 +20,7 @@ class Place {
     var butsumaBitmap : Bitmap? = null
     var textFrame : Element? = null
 
+    var questBitmap : Bitmap? = null
     var battleBitmap : Bitmap? = null
 
 
@@ -56,7 +57,7 @@ class Place {
             messageCharacter = sara?.bitmap
         } else if (textNumber == 12) {
             messageCharacter = ren?.bitmap
-            place?.bitmap = battleBitmap!!
+            place?.bitmap = questBitmap!!
             ren?.x = 1200.0f
             sara?.x = 900.0f
 

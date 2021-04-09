@@ -12,7 +12,9 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStreamReader
 
 class MainActivity : AppCompatActivity() {
 
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
         val text = TextView(this)
         val linearLayout = LinearLayout(this)
         linearLayout.orientation = LinearLayout.VERTICAL
@@ -76,25 +79,28 @@ class MainActivity : AppCompatActivity() {
         text.bringToFront()
 
         val surfaceView = findViewById<SurfaceView>(R.id.surfaceView)
-        gameSurfaceView = GameSurfaceView(surfaceView)
+        gameSurfaceView = GameSurfaceView(surfaceView, resources.assets, getResources())
         gameSurfaceView?.addTextView( text )
         gameSurfaceView?.addButton1( button1 )
         gameSurfaceView?.addButton2( button2 )
         gameSurfaceView?.addButton3( button3 )
+//
+//        gameSurfaceView?.addBitmapTitle(BitmapFactory.decodeResource(getResources(), R.drawable.title))
+//        gameSurfaceView?.addBitmapOpening(BitmapFactory.decodeResource(getResources(), R.drawable.opening))
+//        gameSurfaceView?.addBitmapQuest(BitmapFactory.decodeResource(getResources(), R.drawable.quest))
+//
+//        gameSurfaceView?.addBitmapRen(BitmapFactory.decodeResource(getResources(), R.drawable.ren))
+//        gameSurfaceView?.addBitmapSara(BitmapFactory.decodeResource(getResources(), R.drawable.sara))
+//        gameSurfaceView?.addBitmapToushu(BitmapFactory.decodeResource(getResources(), R.drawable.toushu))
+//        gameSurfaceView?.addBitmapPolice(BitmapFactory.decodeResource(getResources(), R.drawable.police))
+//
+//        gameSurfaceView?.addBitmapScene001_butsuma(BitmapFactory.decodeResource(getResources(), R.drawable.scene001_butsuma))
+//        gameSurfaceView?.addBitmapScene001_byouin(BitmapFactory.decodeResource(getResources(), R.drawable.scene001_byouin))
+//        gameSurfaceView?.addBitmapScene001_battle(BitmapFactory.decodeResource(getResources(), R.drawable.scene001_battle))
+//        gameSurfaceView?.addBitmapTextFrame(BitmapFactory.decodeResource(getResources(), R.drawable.textframe))
 
-        gameSurfaceView?.addBitmapTitle(BitmapFactory.decodeResource(getResources(), R.drawable.title))
-        gameSurfaceView?.addBitmapOpening(BitmapFactory.decodeResource(getResources(), R.drawable.opening))
-        gameSurfaceView?.addBitmapQuest(BitmapFactory.decodeResource(getResources(), R.drawable.quest))
 
-        gameSurfaceView?.addBitmapRen(BitmapFactory.decodeResource(getResources(), R.drawable.ren))
-        gameSurfaceView?.addBitmapSara(BitmapFactory.decodeResource(getResources(), R.drawable.sara))
-        gameSurfaceView?.addBitmapToushu(BitmapFactory.decodeResource(getResources(), R.drawable.toushu))
-        gameSurfaceView?.addBitmapPolice(BitmapFactory.decodeResource(getResources(), R.drawable.police))
-
-        gameSurfaceView?.addBitmapScene001_butsuma(BitmapFactory.decodeResource(getResources(), R.drawable.scene001_butsuma))
-        gameSurfaceView?.addBitmapScene001_byouin(BitmapFactory.decodeResource(getResources(), R.drawable.scene001_byouin))
-        gameSurfaceView?.addBitmapScene001_battle(BitmapFactory.decodeResource(getResources(), R.drawable.scene001_battle))
-        gameSurfaceView?.addBitmapTextFrame(BitmapFactory.decodeResource(getResources(), R.drawable.textframe))
+        audioPlay("thema_of_nakada.mp3")
 
     }
 
@@ -103,9 +109,16 @@ class MainActivity : AppCompatActivity() {
         when(event.getAction()) {
             MotionEvent.ACTION_UP -> {
                 val sceneNumber = gameSurfaceView?.onTouch()
-                if (sceneNumber == 4) {
-                    audioPlay()
+                if (sceneNumber == 0) {
+                } else if (sceneNumber == 2) {
+                    audioPlay("sentimental_mode.mp3")
+                } else if (sceneNumber == 4) {
+                    audioPlay("dead_or_live.mp3")
                 } else if (beforeSceneNumber == 4 && sceneNumber == 1) {
+                    audioStop()
+                } else if (sceneNumber == 3) {
+                    audioStop()
+                } else if (sceneNumber == 1) {
                     audioStop()
                 }
                 beforeSceneNumber = sceneNumber!!
@@ -114,28 +127,28 @@ class MainActivity : AppCompatActivity() {
         return super.onTouchEvent(event)
     }
 
-    private var mediaPlayer: MediaPlayer = MediaPlayer()
+    private var mediaPlayer: MediaPlayer? = MediaPlayer()
 
-    private fun audioSetup(): Boolean {
+    private fun audioSetup(bgmName: String): Boolean {
         // インタンスを生成
-//        mediaPlayer = MediaPlayer()
+        mediaPlayer = MediaPlayer()
 
         //音楽ファイル名, あるいはパス
-        val filePath = "dead_or_live.mp3"
+        val filePath = bgmName
         var fileCheck = false
 
         // assetsから mp3 ファイルを読み込み
         try {
             assets.openFd(filePath).use { afdescripter ->
                 // MediaPlayerに読み込んだ音楽ファイルを指定
-                mediaPlayer.setDataSource(
+                mediaPlayer?.setDataSource(
                     afdescripter.fileDescriptor,
                     afdescripter.startOffset,
                     afdescripter.length
                 )
                 // 音量調整を端末のボタンに任せる
                 volumeControlStream = AudioManager.STREAM_MUSIC
-                mediaPlayer.prepare()
+                mediaPlayer?.prepare()
                 fileCheck = true
             }
         } catch (e1: IOException) {
@@ -144,10 +157,10 @@ class MainActivity : AppCompatActivity() {
         return fileCheck
     }
 
-    private fun audioPlay() {
+    private fun audioPlay(bgmName: String) {
 //        if (mediaPlayer == null) {
         // audio ファイルを読出し
-        if (audioSetup()) {
+        if (audioSetup(bgmName)) {
 //                Toast.makeText(application, "Rread audio file", Toast.LENGTH_SHORT).show()
         } else {
 //                Toast.makeText(application, "Error: read audio file", Toast.LENGTH_SHORT)
@@ -163,7 +176,7 @@ class MainActivity : AppCompatActivity() {
 //        }
 
         // 再生する
-        mediaPlayer.isLooping = true
+        mediaPlayer?.isLooping = true
         mediaPlayer!!.start()
 
         // 終了を検知するリスナー
@@ -188,13 +201,13 @@ class MainActivity : AppCompatActivity() {
         mediaPlayer!!.reset()
         // リソースの解放
         mediaPlayer!!.release()
-//        mediaPlayer = null
+        mediaPlayer = null
     }
 
     override fun onRestart() {
         super.onRestart()
         audioStop()
-        audioPlay()
+        audioPlay("sentimental_mode.mp3")
     }
     override fun onPause() {
         super.onPause()
