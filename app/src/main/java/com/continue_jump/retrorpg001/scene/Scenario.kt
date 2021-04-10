@@ -3,25 +3,11 @@ package com.continue_jump.retrorpg001
 import android.content.res.AssetManager
 import android.content.res.Resources
 import android.graphics.*
+import android.media.MediaPlayer
 import android.widget.Button
 import android.widget.TextView
 import com.continue_jump.retrorpg001.scene.SceneInterface
-
-
-enum class Background {
-    BUTSUMA,
-    BYOUIN,
-    CHANOMA,
-    GENKAN,
-}
-
-enum class Character {
-    REN,
-    SARA,
-    TOUSHU,
-    GRAD,
-    ARISA,
-}
+import java.io.IOException
 
 class Scenario : SceneInterface {
 
@@ -82,20 +68,30 @@ class Scenario : SceneInterface {
             textNumber += 1
 
             val place = words?.nextSerifu()
-            if (place == "Byoin") {
+
+            if (place!![0] == "Byoin") {
                 background = BitmapFactory.decodeResource(resource, R.drawable.scene001_byouin)
-            } else if (place == "Butsuma") {
+            } else if (place!![0] == "Butsuma") {
+                if (place!![1] == "0") {
+                    audioStop()
+                    audioPlay("sentimental_mode.mp3")
+                }
                 background = BitmapFactory.decodeResource(resource, R.drawable.scene001_butsuma)
-            } else if (place == "Genkan") {
+            } else if (place!![0] == "Genkan") {
+                audioStop()
+                audioPlay("thema_of_nakada.mp3")
                 background = BitmapFactory.decodeResource(resource, R.drawable.scene001_genkan)
-            } else if (place == "Chanoma") {
+            } else if (place!![0] == "Chanoma") {
                 background = BitmapFactory.decodeResource(resource, R.drawable.scene001_chanoma)
-            } else if (place == "Mahina") {
+            } else if (place!![0] == "Mahina") {
+                audioPlay("cave_road.mp3")
                 background = BitmapFactory.decodeResource(resource, R.drawable.scene002_mahina)
                 returnSceneNumber = 0
-            } else if (place == "SceneEnd") {
+            } else if (place!![0] == "SceneEnd") {
+                audioStop()
                 returnSceneNumber = 3
-            } else if (place == "Quest") {
+            } else if (place!![0] == "Quest") {
+                audioStop()
                 background = BitmapFactory.decodeResource(resource, R.drawable.quest)
                 returnSceneNumber = 4
             }
@@ -132,6 +128,83 @@ class Scenario : SceneInterface {
         )
 
         return returnSceneNumber
+    }
+
+    override var mediaPlayer: MediaPlayer? = MediaPlayer()
+
+    override fun audioSetup(bgmName: String): Boolean {
+        // インタンスを生成
+        mediaPlayer = MediaPlayer()
+
+        //音楽ファイル名, あるいはパス
+        val filePath = bgmName
+        var fileCheck = false
+
+        // assetsから mp3 ファイルを読み込み
+        try {
+            assetManager.openFd(filePath).use { afdescripter ->
+                // MediaPlayerに読み込んだ音楽ファイルを指定
+                mediaPlayer?.setDataSource(
+                    afdescripter.fileDescriptor,
+                    afdescripter.startOffset,
+                    afdescripter.length
+                )
+                // 音量調整を端末のボタンに任せる
+//                volumeControlStream = AudioManager.STREAM_MUSIC
+                mediaPlayer?.prepare()
+                fileCheck = true
+            }
+        } catch (e1: IOException) {
+            e1.printStackTrace()
+        }
+        return fileCheck
+    }
+
+    override fun audioPlay(bgmName: String) {
+//        if (mediaPlayer == null) {
+        // audio ファイルを読出し
+        if (audioSetup(bgmName)) {
+//                Toast.makeText(application, "Rread audio file", Toast.LENGTH_SHORT).show()
+        } else {
+//                Toast.makeText(application, "Error: read audio file", Toast.LENGTH_SHORT)
+//                    .show()
+            return
+        }
+//        } else {
+//            // 繰り返し再生する場合
+//            mediaPlayer!!.stop()
+//            mediaPlayer!!.reset()
+//            // リソースの解放
+//            mediaPlayer!!.release()
+//        }
+
+        // 再生する
+        mediaPlayer?.isLooping = true
+        mediaPlayer!!.start()
+
+        // 終了を検知するリスナー
+//        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+//            @Override
+//            public void onCompletion(MediaPlayer mp) {
+//                Log.d("debug","end of audio");
+//                audioStop();
+//            }
+//        });
+        // lambda
+        mediaPlayer!!.setOnCompletionListener { mp: MediaPlayer? ->
+//            Log.d("debug", "end of audio")
+            audioStop()
+        }
+    }
+
+    override fun audioStop() {
+        // 再生終了
+        mediaPlayer!!.stop()
+        // リセット
+        mediaPlayer!!.reset()
+        // リソースの解放
+        mediaPlayer!!.release()
+        mediaPlayer = null
     }
 
 }

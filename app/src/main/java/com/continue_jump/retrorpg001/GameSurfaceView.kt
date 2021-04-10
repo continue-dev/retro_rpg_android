@@ -132,10 +132,12 @@ class GameSurfaceView : SurfaceHolder.Callback, Runnable {
         sceneNumber += 1
 
         if (sceneNumber == 1) {
+            scene.audioStop()
             scene = Opening(assetManager, resource)
 //            opening.changeButton()
         }
         if (sceneNumber == 2) {
+            scene.audioStop()
             scene = Scenario(assetManager, resource)
             scene.setViews(textView!!, button1!!, button2!!, button3!!)
             scene.setScenario(1, 0)
@@ -206,6 +208,7 @@ class GameSurfaceView : SurfaceHolder.Callback, Runnable {
                         }.start()
 
                     } else if (sceneNum == 5) {
+                        scene.audioStop()
                         scene = Scenario(assetManager, resource)
                         Thread { // Handlerを使用してメイン(UI)スレッドに処理を依頼する
                             handler.post(Runnable {

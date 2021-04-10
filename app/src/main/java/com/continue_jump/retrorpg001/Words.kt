@@ -13,10 +13,6 @@ class Words {
 
     constructor(textView: TextView) {
         text = textView
-
-        text?.text = """
-父さん・・・。
-""".trimMargin()
         text?.setPadding(512, 512 + 128 + 64, 0, 0)
         text?.textSize = 24.0f
 
@@ -37,13 +33,14 @@ class Words {
         }
     }
 
-    fun nextSerifu() : String {
+    fun nextSerifu() : List<String> {
         val line = bufferReader?.readLine()
         if (line == null || line == "") {
-            return "SceneEnd"
+            val ret : List<String> = listOf("SceneEnd")
+            return ret
         }
         val scenario = line?.split(",")!!.map{ it.trim('"') }
         text?.text = scenario[3] + "\n" + scenario[4] + "\n" + scenario[5]
-        return scenario[0]
+        return scenario
     }
 }

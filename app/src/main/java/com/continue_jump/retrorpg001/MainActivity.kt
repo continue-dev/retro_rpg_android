@@ -1,6 +1,5 @@
 package com.continue_jump.retrorpg001
 
-import android.graphics.BitmapFactory
 import android.media.AudioManager
 import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
@@ -12,9 +11,7 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import java.io.BufferedReader
 import java.io.IOException
-import java.io.InputStreamReader
 
 class MainActivity : AppCompatActivity() {
 
@@ -100,7 +97,8 @@ class MainActivity : AppCompatActivity() {
 //        gameSurfaceView?.addBitmapTextFrame(BitmapFactory.decodeResource(getResources(), R.drawable.textframe))
 
 
-        audioPlay("thema_of_nakada.mp3")
+//        audioPlay("thema_of_nakada.mp3")
+        volumeControlStream = AudioManager.STREAM_MUSIC
 
     }
 
@@ -111,15 +109,15 @@ class MainActivity : AppCompatActivity() {
                 val sceneNumber = gameSurfaceView?.onTouch()
                 if (sceneNumber == 0) {
                 } else if (sceneNumber == 2) {
-                    audioPlay("sentimental_mode.mp3")
+//                    audioPlay("sentimental_mode.mp3")
                 } else if (sceneNumber == 4) {
-                    audioPlay("dead_or_live.mp3")
+//                    audioPlay("dead_or_live.mp3")
                 } else if (beforeSceneNumber == 4 && sceneNumber == 1) {
-                    audioStop()
+//                    audioStop()
                 } else if (sceneNumber == 3) {
-                    audioStop()
+//                    audioStop()
                 } else if (sceneNumber == 1) {
-                    audioStop()
+//                    audioStop()
                 }
                 beforeSceneNumber = sceneNumber!!
             }
