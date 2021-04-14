@@ -44,19 +44,23 @@ class MainActivity : AppCompatActivity() {
         var button1Layout = LinearLayout(this)
         var button2Layout = LinearLayout(this)
         var button3Layout = LinearLayout(this)
+        var button4Layout = LinearLayout(this)
 
         val button1 = Button(this)
         val button2 = Button(this)
         val button3 = Button(this)
+        val button4 = Button(this)
 
         text.visibility = TextView.INVISIBLE
         button1.visibility = Button.INVISIBLE
         button2.visibility = Button.INVISIBLE
         button3.visibility = Button.INVISIBLE
+        button4.visibility = Button.INVISIBLE
 
         button1Layout.addView(button1, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) )
         button2Layout.addView(button2, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) )
         button3Layout.addView(button3, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) )
+        button4Layout.addView(button4, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) )
 
 //        button1Layout.scaleX = 1.6f
 //        button2Layout.scaleX = 1.6f
@@ -67,20 +71,20 @@ class MainActivity : AppCompatActivity() {
         button1Layout.setPadding(0, 50, 100, 0)
         button2Layout.setPadding(0, 50, 100, 0)
         button3Layout.setPadding(0, 50, 100, 0)
+        button4Layout.setPadding(0, 50, 100, 0)
 
         addContentView(text, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT) )
         addContentView(linearLayout, ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT) )
         linearLayout.addView(button1Layout, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) )
         linearLayout.addView(button2Layout, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) )
         linearLayout.addView(button3Layout, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) )
+        linearLayout.addView(button4Layout, ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT) )
         text.bringToFront()
 
         val surfaceView = findViewById<SurfaceView>(R.id.surfaceView)
         gameSurfaceView = GameSurfaceView(surfaceView, resources.assets, getResources())
         gameSurfaceView?.addTextView( text )
-        gameSurfaceView?.addButton1( button1 )
-        gameSurfaceView?.addButton2( button2 )
-        gameSurfaceView?.addButton3( button3 )
+        gameSurfaceView?.addButton( button1, button2, button3, button4 )
 //
 //        gameSurfaceView?.addBitmapTitle(BitmapFactory.decodeResource(getResources(), R.drawable.title))
 //        gameSurfaceView?.addBitmapOpening(BitmapFactory.decodeResource(getResources(), R.drawable.opening))

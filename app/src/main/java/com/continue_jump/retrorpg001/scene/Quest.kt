@@ -4,6 +4,7 @@ import android.content.res.AssetManager
 import android.content.res.Resources
 import android.graphics.*
 import android.media.MediaPlayer
+import android.os.Handler
 import android.widget.Button
 import android.widget.TextView
 import com.continue_jump.retrorpg001.CharacterInterface
@@ -20,11 +21,14 @@ class Quest : SceneInterface {
     override var button1: Button? = null
     override var button2: Button? = null
     override var button3: Button? = null
+    override var button4: Button? = null
 
     override var returnSceneNumber: Int = 0
+    override var handler: Handler? = null
 
     var tempCounter: Int = 0
     constructor(asset: AssetManager, res: Resources) {
+//        handler = Handler()
         assetManager = asset
         resource = res
         background = BitmapFactory.decodeResource(resource, R.drawable.quest)
@@ -34,10 +38,13 @@ class Quest : SceneInterface {
     override fun setViews(textView: TextView,
                           button_1: Button,
                           button_2: Button,
-                          button_3: Button) {
+                          button_3: Button,
+                          button_4: Button
+    ) {
         button1 = button_1
         button2 = button_2
         button3 = button_3
+        button4 = button_4
 
         changeButton()
     }
@@ -45,10 +52,12 @@ class Quest : SceneInterface {
         button1?.visibility = Button.VISIBLE
         button2?.visibility = Button.VISIBLE
         button3?.visibility = Button.VISIBLE
+        button4?.visibility = Button.VISIBLE
 
-        button1?.text = "進む"
-        button2?.text = "曲がる"
-        button3?.text = "戻る"
+        button1?.text = "↑"
+        button2?.text = "←"
+        button3?.text = "→"
+        button4?.text = "↓"
 
         button1?.setOnClickListener {
             tempCounter += 1
@@ -150,4 +159,17 @@ class Quest : SceneInterface {
         mediaPlayer = null
     }
 
+    override fun finalize() {
+        Thread { // Handlerを使用してメイン(UI)スレッドに処理を依頼する
+            handler?.post(Runnable {
+                button1?.visibility = Button.INVISIBLE
+                button2?.visibility = Button.INVISIBLE
+                button3?.visibility = Button.INVISIBLE
+                button4?.visibility = Button.INVISIBLE
+            })
+        }.start()
+
+
+
+    }
 }

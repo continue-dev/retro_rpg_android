@@ -7,6 +7,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.os.Handler
 import android.widget.Button
 import android.widget.TextView
 import com.continue_jump.retrorpg001.CharacterInterface
@@ -25,10 +26,12 @@ interface SceneInterface {
     var button1 : Button?
     var button2 : Button?
     var button3 : Button?
+    var button4 : Button?
 
     var returnSceneNumber: Int
 
     var mediaPlayer: MediaPlayer?
+    var handler: Handler?
 
     fun audioSetup(bgmName: String): Boolean {
         // インタンスを生成
@@ -115,8 +118,14 @@ interface SceneInterface {
                  button_1: Button,
                  button_2: Button,
                  button_3: Button) {}
+    fun setViews(textView: TextView,
+                 button_1: Button,
+                 button_2: Button,
+                 button_3: Button,
+                 button_4: Button) {}
     fun setScenario(scenarioNumber : Int, continueNumber : Int) {}
     fun setAssetsManager(asset: AssetManager) {}
     fun draw(canvas: Canvas, paint: Paint) : Int { return 0 }
+    fun finalize() {}
 
 }

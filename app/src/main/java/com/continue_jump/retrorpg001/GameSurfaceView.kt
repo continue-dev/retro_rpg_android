@@ -28,6 +28,7 @@ class GameSurfaceView : SurfaceHolder.Callback, Runnable {
     var button1 : Button? = null
     var button2 : Button? = null
     var button3 : Button? = null
+    var button4 : Button? = null
 //    var title : Title = Title()
 //    var opening : Opening = Opening()
 //    var scenario : Scenario = Scenario()
@@ -101,31 +102,13 @@ class GameSurfaceView : SurfaceHolder.Callback, Runnable {
 //    }
     fun addTextView(text_View: TextView) {
         textView = text_View
-//        scenario.words = Words(textView)
-//        quest.words = scenario.words
-//        battle.words = scenario.words
     }
 
-    fun addButton1(button: Button) {
-        button1 = button
-//        opening.button1 = button
-//        scenario.button1 = button
-//        quest.button1 = button
-//        battle.button1 = button
-    }
-    fun addButton2(button: Button) {
-        button2 = button
-//        opening.button2 = button
-//        scenario.button2 = button
-//        quest.button2 = button
-//        battle.button2 = button
-    }
-    fun addButton3(button: Button) {
-        button3 = button
-//        opening.button3 = button
-//        scenario.button3 = button
-//        quest.button3 = button
-//        battle.button3 = button
+    fun addButton(button_1: Button, button_2: Button, button_3: Button, button_4: Button) {
+        button1 = button_1
+        button2 = button_2
+        button3 = button_3
+        button4 = button_4
     }
 
     fun onTouch(): Int {
@@ -134,33 +117,16 @@ class GameSurfaceView : SurfaceHolder.Callback, Runnable {
         if (sceneNumber == 1) {
             scene.audioStop()
             scene = Opening(assetManager, resource)
-//            opening.changeButton()
         }
         if (sceneNumber == 2) {
             scene.audioStop()
             scene = Scenario(assetManager, resource)
-            scene.setViews(textView!!, button1!!, button2!!, button3!!)
+            scene.setViews(textView!!, button1!!, button2!!, button3!!, button4!!)
             scene.setScenario(1, 0)
 
-//            sceneNumber -= 1
         }
 
-//        if (sceneNumber == 3) {
-//            quest.changeButton()
-//        }
-//        if (sceneNumber == 4) {
-//            battle.changeButton()
-//        }
-//
-//        if (sceneNumber >= 5) {
-//            sceneNumber = 1
-//        }
-
         return sceneNumber
-//        textNumber += 1
-//        words?.nextWords(textNumber)
-//        place.nextPlace(textNumber)
-
     }
 
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
@@ -203,16 +169,17 @@ class GameSurfaceView : SurfaceHolder.Callback, Runnable {
 
                         Thread { // Handlerを使用してメイン(UI)スレッドに処理を依頼する
                             handler.post(Runnable {
-                                scene.setViews(textView!!, button1!!, button2!!, button3!!)
+                                scene.setViews(textView!!, button1!!, button2!!, button3!!, button4!!)
                             })
                         }.start()
 
                     } else if (sceneNum == 5) {
                         scene.audioStop()
+                        scene.finalize()
                         scene = Scenario(assetManager, resource)
                         Thread { // Handlerを使用してメイン(UI)スレッドに処理を依頼する
                             handler.post(Runnable {
-                                scene.setViews(textView!!, button1!!, button2!!, button3!!)
+                                scene.setViews(textView!!, button1!!, button2!!, button3!!, button4!!)
                                 scene.setScenario(2, 23)
                             })
                         }.start()

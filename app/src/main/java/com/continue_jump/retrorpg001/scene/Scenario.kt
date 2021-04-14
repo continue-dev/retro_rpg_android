@@ -4,6 +4,7 @@ import android.content.res.AssetManager
 import android.content.res.Resources
 import android.graphics.*
 import android.media.MediaPlayer
+import android.os.Handler
 import android.widget.Button
 import android.widget.TextView
 import com.continue_jump.retrorpg001.scene.SceneInterface
@@ -19,13 +20,16 @@ class Scenario : SceneInterface {
     override var button1: Button? = null
     override var button2: Button? = null
     override var button3: Button? = null
+    override var button4: Button? = null
 
     var words : Words? = null
     var textNumber : Int = 0
 
     var textFrame : Bitmap? = null
 
-    override var returnSceneNumber : Int = 0
+
+    override var returnSceneNumber: Int = 0
+    override var handler: Handler? = null
 
     constructor(asset: AssetManager, res: Resources) {
         assetManager = asset
@@ -36,12 +40,15 @@ class Scenario : SceneInterface {
 
     }
     override fun setViews(textView: TextView,
-                 button_1: Button,
-                 button_2: Button,
-                 button_3: Button) {
+                          button_1: Button,
+                          button_2: Button,
+                          button_3: Button,
+                          button_4: Button
+    ) {
         button1 = button_1
         button2 = button_2
         button3 = button_3
+        button4 = button_4
         words = Words(textView)
         words?.setAssetsManager(assetManager)
 
@@ -59,6 +66,7 @@ class Scenario : SceneInterface {
         button1?.visibility = Button.VISIBLE
         button2?.visibility = Button.VISIBLE
         button3?.visibility = Button.VISIBLE
+        button4?.visibility = Button.INVISIBLE
 
         button1?.text = "話す"
         button2?.text = "次へ"

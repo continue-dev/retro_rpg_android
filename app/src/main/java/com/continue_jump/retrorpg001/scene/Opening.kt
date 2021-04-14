@@ -4,6 +4,7 @@ import android.content.res.AssetManager
 import android.content.res.Resources
 import android.graphics.*
 import android.media.MediaPlayer
+import android.os.Handler
 import android.widget.Button
 import com.continue_jump.retrorpg001.CharacterInterface
 import com.continue_jump.retrorpg001.R
@@ -19,7 +20,10 @@ class Opening : SceneInterface {
     override var button2: Button? = null
     override var button3: Button? = null
 
+    override var button4: Button? = null
+
     override var returnSceneNumber: Int = 0
+    override var handler: Handler? = null
 
     constructor(asset: AssetManager, res: Resources) {
         assetManager = asset
