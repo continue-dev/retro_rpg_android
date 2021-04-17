@@ -5,11 +5,16 @@ import android.content.res.Resources
 import android.graphics.*
 import android.media.MediaPlayer
 import android.os.Handler
+import android.view.MotionEvent
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import com.continue_jump.retrorpg001.BackgroundInterface
 import com.continue_jump.retrorpg001.CharacterInterface
+import com.continue_jump.retrorpg001.MapChip
 import com.continue_jump.retrorpg001.R
 import java.io.IOException
+import kotlin.random.Random
 
 class Quest : SceneInterface {
 
@@ -26,13 +31,38 @@ class Quest : SceneInterface {
     override var returnSceneNumber: Int = 0
     override var handler: Handler? = null
 
+    var leftButtonFlag : Boolean = false
+    var rightButtonFlag : Boolean = false
+    var downButtonFlag : Boolean = false
+    var fieldMap : Bitmap?
+    var treeMap : Bitmap?
+    var mountainMap : Bitmap?
+    var mapchip: Array<BackgroundInterface?> = arrayOf()
     var tempCounter: Int = 0
     constructor(asset: AssetManager, res: Resources) {
 //        handler = Handler()
         assetManager = asset
         resource = res
-        background = BitmapFactory.decodeResource(resource, R.drawable.quest)
-        audioPlay("dead_or_live.mp3")
+//        background = BitmapFactory.decodeResource(resource, R.drawable.quest)
+//        audioPlay("dead_or_live.mp3")
+
+        fieldMap = BitmapFactory.decodeResource(resource, R.drawable.field)
+        mountainMap = BitmapFactory.decodeResource(resource, R.drawable.field_mountain)
+        treeMap = BitmapFactory.decodeResource(resource, R.drawable.field_tree)
+
+        background = fieldMap!!
+        for (y in 0..6) {
+            for (x in 0..14) {
+                val r = Random.nextInt(10)
+                if (r == 0) {
+                    mapchip += MapChip(mountainMap!!, 180 * x, 180 * y)
+                } else if (r == 1) {
+                    mapchip += MapChip(treeMap!!, 180 * x, 180 * y)
+                } else {
+                    mapchip += MapChip(fieldMap!!, 180 * x, 180 * y)
+                }
+            }
+        }
     }
 
     override fun setViews(textView: TextView,
@@ -65,19 +95,107 @@ class Quest : SceneInterface {
                 returnSceneNumber = 5
             }
         }
-        button2?.setOnClickListener {
-        }
+        button2?.setOnTouchListener(
+            View.OnTouchListener { v, event ->
+                // タッチされた時に受ける関数を設定
+                val action = event.action
+                when (action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        leftButtonFlag = true
+                        return@OnTouchListener true
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        leftButtonFlag = false
+                        return@OnTouchListener true
+                    }
+                }
+                false
+            }
+        )
+        button3?.setOnTouchListener(
+            View.OnTouchListener { v, event ->
+                // タッチされた時に受ける関数を設定
+                val action = event.action
+                when (action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        rightButtonFlag = true
+                        return@OnTouchListener true
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        rightButtonFlag = false
+                        return@OnTouchListener true
+                    }
+                }
+                false
+            }
+        )
+
+        button4?.setOnTouchListener(
+            View.OnTouchListener { v, event ->
+                // タッチされた時に受ける関数を設定
+                val action = event.action
+                when (action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        downButtonFlag = true
+                        return@OnTouchListener true
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        downButtonFlag = false
+                        return@OnTouchListener true
+                    }
+                }
+                false
+            }
+        )
 
     }
 
     override fun draw(canvas: Canvas, paint: Paint) : Int {
+
+        if (leftButtonFlag) {
+            for (map in mapchip) {
+                map?.x = map?.x?.plus(10)!!
+
+                if (map?.x > 2340) {
+                    map?.x = -180
+                }
+            }
+        }
+        if (rightButtonFlag) {
+            for (map in mapchip) {
+                map?.x = map?.x?.minus(10)!!
+
+                if (map?.x < -180) {
+                    map?.x = 2340
+                }
+            }
+        }
+        if (downButtonFlag) {
+            for (map in mapchip) {
+                map?.y = map?.y?.plus(10)!!
+
+                if (map?.y > 1080) {
+                    map?.y = -180
+                }
+            }
+        }
+
         if (background != null) {
-            canvas.drawBitmap(
-                background,
-                Rect(0, 0, 512 * 8, 512 * 4),
-                Rect(0, 0, 256 * 26, 256 * 13),
-                paint
-            )
+//            canvas.drawBitmap(
+//                background,
+//                Rect(0, 0, 512 * 8, 512 * 4),
+//                Rect(0, 0, 256 * 26, 256 * 13),
+//                paint
+//            )
+
+            for (map in mapchip) {
+                canvas.drawBitmap(
+                    map?.bitmap!!,
+                    Rect(0, 0, 512, 512),
+                    Rect(map?.x, map?.y, 512 + map?.x, 512 + map?.y),
+                    paint
+                )
+            }
         }
         return returnSceneNumber
     }
